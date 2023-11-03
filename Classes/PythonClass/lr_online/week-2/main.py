@@ -1,0 +1,65 @@
+def get_season(month: int) -> str:
+    m2s = {
+        (12, 1, 2): '冬天',
+        (3, 4, 5): '春天',
+        (6, 7, 8): '夏天',
+        (9, 10, 11): '秋天'
+    }
+    for m, s in m2s.items():
+        if month in m:
+            return s
+    else:
+        return '输入有误'
+
+
+print('***习题1***')
+mon = int(input('请输入月份(数字):'))
+print(get_season(mon))
+print('-'*20)
+
+
+def get_level(score: int) -> str:
+    if score >= 90:
+        return '优秀'
+    elif score >= 70:
+        return '良好'
+    elif score >= 60:
+        return '及格'
+    else:
+        return '不及格'
+
+
+print('***习题2***')
+for _ in range(10):
+    sc = int(input('请输入分数(百分制):'))
+    print(get_level(sc))
+print('-'*20)
+
+
+def get_counts(input_str: str):
+    num_count = 0
+    alpha_count = 0
+    space_count = 0
+    other_count = 0
+
+    for char in input_str:
+        if char.isdigit():
+            num_count += 1
+        elif char.isalpha():
+            alpha_count += 1
+        elif char.isspace():
+            space_count += 1
+        else:
+            other_count += 1
+
+    return num_count, alpha_count, space_count, other_count
+
+
+print('***习题3***')
+sts = input('请输入自定义字符串:')
+count1, count2, count3, count4 = get_counts(sts)
+print("数字个数：", count1)
+print("字母个数：", count2)
+print("空格个数：", count3)
+print("其他字符个数：", count4)
+print('-'*20)
