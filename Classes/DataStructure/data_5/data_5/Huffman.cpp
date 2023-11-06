@@ -1,20 +1,21 @@
 ﻿#include"Huffman.h"
 
-void init(unordered_map<char, int>& freq) {
+void init(map<char, int>& freq) {
 	cout << "Code counts:";
 	int n, f;
 	char code;
 	cin >> n;
 	for (int i = 1; i <= n; i++) {
+		getchar();
 		cout << "code_" << i << ":";
-		cin >> code;
+		code = getchar();
 		cout << "freq:";
 		cin >> f;
 		freq[code] += f;
 	}
 }
 
-Node* buildHuffmanTree(unordered_map<char, int>& freq) {
+Node* buildHuffmanTree(map<char, int>& freq) {
 	//小顶堆 权重小的在堆顶
 	priority_queue<Node*, vector<Node*>, Compare> pq;
 
@@ -35,7 +36,7 @@ Node* buildHuffmanTree(unordered_map<char, int>& freq) {
 	return pq.top();
 }
 
-void encode(Node* root, string str, unordered_map<char, string>& huffmanCode) {
+void encode(Node* root, string str, map<char, string>& huffmanCode) {
 	if (root == nullptr) {
 		return;
 	}
@@ -46,7 +47,7 @@ void encode(Node* root, string str, unordered_map<char, string>& huffmanCode) {
 	encode(root->right, str + "1", huffmanCode);
 }
 
-void printHuffmanCode(unordered_map<char, string>& huffmanCode) {
+void printHuffmanCode(map<char, string>& huffmanCode) {
 	cout << "Huffman Codes:" << endl;
 	for (auto it : huffmanCode) {
 		cout << it.first << " " << it.second << endl;
@@ -78,7 +79,7 @@ string decText(string& encodedText, Node* root) {
 	return decodedText;
 }
 
-string encText(string& text, unordered_map<char, string>& huffmanCode) {
+string encText(string& text, map<char, string>& huffmanCode) {
 	string encodedText = "";
 	for (char ch : text) {
 		encodedText += huffmanCode[ch];
@@ -86,7 +87,7 @@ string encText(string& text, unordered_map<char, string>& huffmanCode) {
 	return encodedText;
 }
 
-bool saveHuffman(unordered_map<char, int>& freq, string fileName) {
+bool saveHuffman(map<char, int>& freq, string fileName) {
 	ofstream f(fileName);
 	if (f.is_open()) {
 		for (auto it : freq) {
@@ -98,13 +99,15 @@ bool saveHuffman(unordered_map<char, int>& freq, string fileName) {
 	else return false;
 }
 
-bool readHuffman(unordered_map<char, int>& freq, string fileName) {
+bool readHuffman(map<char, int>& freq, string fileName) {
 	ifstream f(fileName);
 	char c;
 	int t;
 	if (f.is_open()) {
 		while (!f.eof() && f.peek() != EOF) {
-			f >> c >> t;
+			c = f.get();
+			f >> t;
+			f.get();
 			freq[c] = t;
 		}
 		f.close();

@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include <unordered_map>
+#include <map>
 #include <fstream>
 #include <string>
 #include "Huffman.h"
@@ -8,10 +8,10 @@ using namespace std;
 int main() {
 	string command;
 	while (true) {
-		cout << "Enter command (I/E/D/Q): ";
+		cout << "Enter command (I/E/D/P/T/Q): ";
 		cin >> command;
 		if (command == "I") {
-			unordered_map<char, int> freq;
+			map<char, int> freq;
 
 			//统计频率
 			init(freq);
@@ -21,7 +21,7 @@ int main() {
 			//cout << "Successfully established Huffman tree." << endl;
 
 			////获取字符编码
-			//unordered_map<char, string> huffmanCode;
+			//map<char, string> huffmanCode;
 			//encode(root, "", huffmanCode);
 
 			//保存哈夫曼编码(字符频率)
@@ -29,7 +29,7 @@ int main() {
 			else cout << "Unable to save Huffman tree to file hfmTree.txt." << endl;
 		}
 		else if (command == "E") {
-			unordered_map<char, int> freq;
+			map<char, int> freq;
 
 			//读取哈夫曼编码
 			if (!readHuffman(freq, "hfmTree.txt"))cout << "Unable to read Huffman tree from file hfmTree.txt." << endl;
@@ -45,7 +45,7 @@ int main() {
 					Node* root = buildHuffmanTree(freq);
 
 					//获取字符编码
-					unordered_map<char, string> huffmanCode;
+					map<char, string> huffmanCode;
 					encode(root, "", huffmanCode);
 
 					//对文本进行编码
@@ -66,7 +66,7 @@ int main() {
 			}
 		}
 		else if (command == "D") {
-			unordered_map<char, int> freq;
+			map<char, int> freq;
 
 			//读取哈夫曼编码
 			if (!readHuffman(freq, "hfmTree.txt"))cout << "Unable to read Huffman tree from file hfmTree.txt" << endl;
@@ -98,6 +98,38 @@ int main() {
 				else cout << "Could not open file CodeFile.txt." << endl;
 			}
 		}
+		else if (command == "P") {
+			ifstream f("CodeFile.txt");
+			if (f.is_open()) {
+				string text;
+				getline(f, text);
+				cout << "Text in CodeFile.txt: ";
+				for (int i = 0; i < text.length(); i++) {
+					if (i % 50)cout << text[i];
+					else cout << endl;
+				}
+				cout << endl;
+				f.close();
+			}
+			else cout << "Could not open file CodeFile.txt." << endl;
+		}
+		else if (command == "T") {
+			map<char, int> freq;
+
+			//读取哈夫曼编码
+			if (!readHuffman(freq, "hfmTree.txt"))cout << "Unable to read Huffman tree from file hfmTree.txt" << endl;
+			else {
+				//建立哈夫曼树
+				Node* root = buildHuffmanTree(freq);
+				map<char, string> huffmanCode;
+				encode(root, "", huffmanCode);
+
+				cout << "huffmanCode:" << endl;
+				for (auto i : huffmanCode) {
+					cout << i.first << ": " << i.second << endl;
+				}
+			}
+		}
 		else if (command == "Q") {
 			cout << "Program exit, thank you for using." << endl;
 			break;
@@ -113,7 +145,7 @@ int main() {
 
 
 int main_test() {
-	unordered_map<char, int> freq;
+	map<char, int> freq;
 
 	//统计频率
 	init(freq);
@@ -122,7 +154,7 @@ int main_test() {
 	Node* root = buildHuffmanTree(freq);
 
 	//获取字符编码
-	unordered_map<char, string> huffmanCode;
+	map<char, string> huffmanCode;
 	encode(root, "", huffmanCode);
 
 	//打印哈夫曼编码
