@@ -4,7 +4,7 @@ using namespace std;
 
 const int N = 100007;
 int n, m, ep;
-bool check;
+bool check, vis[N];
 
 struct Edge {
 	int st, ed, len;
@@ -34,14 +34,18 @@ void dfs(int i) {
 		}
 		e = e->next;
 	}
-	if (maxLen) {
+	if (!vis[nextP] && maxLen) {
 		check = true;
+		vis[nextP] = true;
 		cout << nextP << " " << maxLen << endl;
 		dfs(nextP);
 	}
 }
 
 int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
 	cin >> n >> m;
 	for (int i = 0; i < m; i++) {
 		int a, b, len;
