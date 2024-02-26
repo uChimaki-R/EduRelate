@@ -1,0 +1,5 @@
+dataset
+*.pth
+*.txt
+!result.txt
+vocab.json
