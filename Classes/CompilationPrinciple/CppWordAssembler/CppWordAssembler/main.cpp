@@ -56,7 +56,7 @@ bool is_num(char& c) {
 }
 
 
-void get_lines(ifstream& f, vector<string>&lines) {
+void get_lines(ifstream& f, vector<string>& lines) {
 	string line;
 	while (getline(f, line)) {
 		lines.push_back(line);
@@ -99,11 +99,11 @@ void do_assembly(string file_name) {
 			else if (is_operate(lines[line_index][i])) {
 				// 运算符号
 				// 如果是小于号'<'有两种特殊情况(头文件"<name.h>" 或者 "<标识符")
-				if (lines[line_index][i] == '<' && (i + 1 < lines[line_index].size() && is_word(lines[line_index][i + 1]))) {
+				if (lines[line_index][i] == '<' && i + 1 < lines[line_index].size() && is_word(lines[line_index][i + 1])) {
 					// 把中间的 文件名/标识符 取出来
 					i++; // 跳过'<'
 					string name = "";
-					while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i]=='.')) {
+					while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i] == '.')) {
 						// 文件名后缀前有符号'.'，添加判断
 						name += lines[line_index][i];
 						i++;
@@ -119,6 +119,63 @@ void do_assembly(string file_name) {
 						name = "<" + name + ">";
 						output_string += name + "\t特殊符号\n";
 						// 此时i在后面一个位置，即'>'，需要跳过
+					}
+				}
+				else if (lines[line_index][i] == '/' && i + 1 < lines[line_index].size() && (lines[line_index][i + 1] == '/' || lines[line_index][i + 1] == '*')) {
+					// '/'有可能是注释"//"或"/*"
+					if (lines[line_index][i + 1] == '/') {
+						// "//"
+						// 直接将该行之后的内容都当作注释
+						i += 2; // 跳过"//"
+						while (i < lines[line_index].size()) {
+							now_token += lines[line_index][i];
+							i++;
+						}
+						now_token = "//" + now_token;
+						output_string += now_token + "\t注释\n";
+						now_token.clear();
+					}
+					else {
+						// "/*"
+						// 多行注释，要找到下一个"*/"，可能不在同一行
+						i += 2; // 跳过"/*"
+						int pos = lines[line_index].find("*/");
+						if (pos == lines[line_index].npos) {
+							// 这行没有"*/"
+							// 先保存这一行的注释
+							while (i < lines[line_index].size()) {
+								now_token += lines[line_index][i];
+								i++;
+							}
+							line_index++; // 从下一行开始
+							while (line_index < size && (lines[line_index].find("*/") == lines[line_index].npos)) {
+								// 这行没有"*/"
+								now_token += lines[line_index]; // 整行保存
+								line_index++;
+							}
+							// 跳出循环就是这一行有"*/"
+							int pos = lines[line_index].find("*/");
+							i = 0; // 新的行 i置零
+							while (i < pos) {
+								now_token += lines[line_index][i];
+								i++;
+							}
+							i++; // 指向'/'，后面i++会跳过
+							now_token = "/*" + now_token + "*/";
+							output_string += now_token + "\t注释\n";
+							now_token.clear();
+						}
+						else {
+							// 注释在同一行
+							while (i < pos) {
+								now_token += lines[line_index][i];
+								i++;
+							}
+							i++; // 指向'/'，后面i++会跳过
+							now_token = "/*" + now_token + "*/";
+							output_string += now_token + "\t注释\n";
+							now_token.clear();
+						}
 					}
 				}
 				else {
@@ -165,7 +222,7 @@ void do_assembly(string file_name) {
 			else if (is_num(lines[line_index][i])) {
 				// 数字
 				// 把该token取出来
-				while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i]=='.')) {
+				while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
 					// 如果是浮点，数字中间会有'.'
 					now_token += lines[line_index][i];
 					i++;
@@ -186,7 +243,7 @@ void do_assembly(string file_name) {
 				// 字符串
 				// 把该token取出来
 				i++; // 跳过'"'
-				while (i < lines[line_index].size() && lines[line_index][i]!='"') {
+				while (i < lines[line_index].size() && lines[line_index][i] != '"') {
 					now_token += lines[line_index][i];
 					i++;
 				}
@@ -200,7 +257,7 @@ void do_assembly(string file_name) {
 }
 
 int main() {
-	do_assembly("my_test.txt");
+	do_assembly("my_test.cpp");
 	cout << output_string;
 	return 0;
 }
