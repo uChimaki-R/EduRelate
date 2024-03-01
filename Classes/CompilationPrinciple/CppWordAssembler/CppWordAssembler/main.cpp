@@ -122,27 +122,27 @@ void do_assembly(string file_name) {
 					}
 				}
 				else if (lines[line_index][i] == '/' && i + 1 < lines[line_index].size() && (lines[line_index][i + 1] == '/' || lines[line_index][i + 1] == '*')) {
-					// '/'有可能是注释"//"或"/*"
+					// '/'有可能是注解"//"或"/*"
 					if (lines[line_index][i + 1] == '/') {
 						// "//"
-						// 直接将该行之后的内容都当作注释
+						// 直接将该行之后的内容都当作注解
 						i += 2; // 跳过"//"
 						while (i < lines[line_index].size()) {
 							now_token += lines[line_index][i];
 							i++;
 						}
 						now_token = "//" + now_token;
-						output_string += now_token + "\t注释\n";
+						output_string += now_token + "\t注解\n";
 						now_token.clear();
 					}
 					else {
 						// "/*"
-						// 多行注释，要找到下一个"*/"，可能不在同一行
+						// 多行注解，要找到下一个"*/"，可能不在同一行
 						i += 2; // 跳过"/*"
 						int pos = lines[line_index].find("*/");
 						if (pos == lines[line_index].npos) {
 							// 这行没有"*/"
-							// 先保存这一行的注释
+							// 先保存这一行的注解
 							while (i < lines[line_index].size()) {
 								now_token += lines[line_index][i];
 								i++;
@@ -162,18 +162,18 @@ void do_assembly(string file_name) {
 							}
 							i++; // 指向'/'，后面i++会跳过
 							now_token = "/*" + now_token + "*/";
-							output_string += now_token + "\t注释\n";
+							output_string += now_token + "\t注解\n";
 							now_token.clear();
 						}
 						else {
-							// 注释在同一行
+							// 注解在同一行
 							while (i < pos) {
 								now_token += lines[line_index][i];
 								i++;
 							}
 							i++; // 指向'/'，后面i++会跳过
 							now_token = "/*" + now_token + "*/";
-							output_string += now_token + "\t注释\n";
+							output_string += now_token + "\t注解\n";
 							now_token.clear();
 						}
 					}
@@ -257,7 +257,7 @@ void do_assembly(string file_name) {
 }
 
 int main() {
-	do_assembly("my_test.cpp");
+	do_assembly("test.txt");
 	cout << output_string;
 	return 0;
 }
