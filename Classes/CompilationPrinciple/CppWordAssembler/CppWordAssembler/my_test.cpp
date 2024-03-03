@@ -1,6 +1,10 @@
 ﻿#include<iostream>
 using namespace std;
 
+void test_func() {
+	cout << "good!" << endl;
+}
+
 int main()
 {
 	int a = 4, b = 6;
