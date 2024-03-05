@@ -96,7 +96,7 @@ void do_assembly(string file_name) {
 				// 分界符号
 				// 分界符号可以直接输出，没有特殊情况
 				now_token += lines[line_index][i];
-				output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t分界符号\n";
+				output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t分界符号\n";
 				now_token.clear();
 			}
 			else if (is_operate(lines[line_index][i])) {
@@ -113,14 +113,14 @@ void do_assembly(string file_name) {
 					}
 					if (is_identifier(name)) {
 						// 定义的变量标识符
-						output_string += "row[" + to_string(temp_line_index) + "]\t" + name + "\t标识符\n";
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + name + "\t标识符\n";
 						// 此时i在后面一个位置，此时不能跳过，要让i回来
 						i--;
 					}
 					else {
 						// 头文件直接输出
 						name = "<" + name + ">";
-						output_string += "row[" + to_string(temp_line_index) + "]\t" + name + "\t特殊符号\n";
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + name + "\t特殊符号\n";
 						// 此时i在后面一个位置，即'>'，需要跳过
 					}
 				}
@@ -135,7 +135,7 @@ void do_assembly(string file_name) {
 							i++;
 						}
 						now_token = "//" + now_token;
-						output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
 						now_token.clear();
 					}
 					else {
@@ -165,7 +165,7 @@ void do_assembly(string file_name) {
 							}
 							i++; // 指向'/'，后面i++会跳过
 							now_token = "/*" + now_token + "*/";
-							output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
+							output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
 							now_token.clear();
 						}
 						else {
@@ -176,9 +176,51 @@ void do_assembly(string file_name) {
 							}
 							i++; // 指向'/'，后面i++会跳过
 							now_token = "/*" + now_token + "*/";
-							output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
+							output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t注解\n";
 							now_token.clear();
 						}
+					}
+				}
+				else if (lines[line_index][i] == '-' && i + 1 < lines[line_index].size() && is_num(lines[line_index][i + 1])) {
+					// 负数
+					// 把该token取出来
+					i++; // 跳过'-'
+					while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
+						// 如果是浮点，数字中间会有'.'
+						now_token += lines[line_index][i];
+						i++;
+					}
+					i--; // 回到单词的最后位置，后面还会自己++
+					if (now_token.find('.') != now_token.npos) {
+						// 浮点数
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t浮点数\n";
+						now_token.clear(); // 清空token
+					}
+					else {
+						// 整数
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t整数\n";
+						now_token.clear(); // 清空token
+					}
+				}
+				else if (lines[line_index][i] == '-' && i + 1 < lines[line_index].size() && is_num(lines[line_index][i + 1])) {
+					// 负数
+					// 把该token取出来
+					i++; // 跳过'-'
+					while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
+						// 如果是浮点，数字中间会有'.'
+						now_token += lines[line_index][i];
+						i++;
+					}
+					i--; // 回到单词的最后位置，后面还会自己++
+					if (now_token.find('.') != now_token.npos) {
+						// 浮点数
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t浮点数\n";
+						now_token.clear(); // 清空token
+					}
+					else {
+						// 整数
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t整数\n";
+						now_token.clear(); // 清空token
 					}
 				}
 				else {
@@ -190,7 +232,7 @@ void do_assembly(string file_name) {
 						i++;
 					}
 					i--; // 回到最后一个运算符号的位置，后面还会自己++
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t运算符号\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t运算符号\n";
 					now_token.clear(); // 清空token
 				}
 			}
@@ -206,19 +248,19 @@ void do_assembly(string file_name) {
 				// 分两种情况
 				if (is_keyword(now_token)) {
 					// 关键字
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t关键字\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t关键字\n";
 					now_token.clear(); // 清空token
 				}
 				else if (is_identifier(now_token)) {
 					// 定义的变量标识符
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t标识符\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t标识符\n";
 					now_token.clear(); // 清空token
 				}
 				else {
 					// 是新定义的变量标识符
 					// 需要更新identifiers表
 					identifiers.insert(now_token);
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t标识符\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t标识符\n";
 					now_token.clear(); // 清空token
 				}
 			}
@@ -233,12 +275,12 @@ void do_assembly(string file_name) {
 				i--; // 回到单词的最后位置，后面还会自己++
 				if (now_token.find('.') != now_token.npos) {
 					// 浮点数
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t浮点数\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t浮点数\n";
 					now_token.clear(); // 清空token
 				}
 				else {
 					// 整数
-					output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t整数\n";
+					output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t整数\n";
 					now_token.clear(); // 清空token
 				}
 			}
@@ -252,7 +294,7 @@ void do_assembly(string file_name) {
 				}
 				// 此时i停在了'"'上，后面会自动跳过
 				now_token = '"' + now_token + '"';
-				output_string += "row[" + to_string(temp_line_index) + "]\t" + now_token + "\t字符串\n";
+				output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t字符串\n";
 				now_token.clear(); // 清空token
 			}
 		}
