@@ -18,7 +18,10 @@ unordered_set<string> keywords = {
 	"short", "signed", "sizeof", "static", "static_assert", "static_cast",
     "struct", "switch", "template", "this", "thread_local", "thline",
 	"true", "try", "typedef", "typeid", "typename", "union",
-	"unsigned", "using", "using", "virtual", "void", "volatile", "main", "include", "define", "cin", "cout", "string"
+    "unsigned", "using", "using", "virtual", "void", "volatile", "main", "include", "define", "cin", "cout", "string",
+    "while", "alignas", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit", "atomic_noexcept", "bitand", "bitor",
+    "char8_t", "compl", "concept", "consteval", "constinit", "co_await", "co_return", "co_yield", "export", "not",
+    "not_eq", "or", "or_eq", "reflexpr", "synchronized", "throw", "wchar_t", "xor"
 };
 bool is_keyword(string& token) {
 	return keywords.count(token);
@@ -51,9 +54,9 @@ bool is_num(char& c) {
 }
 
 
-void get_lines(ifstream& f, vector<string>& lines) {
+void get_lines(stringstream& ss, vector<string>& lines) {
 	string line;
-	while (getline(f, line)) {
+    while (getline(ss, line)) {
 		lines.push_back(line);
 	}
 }
@@ -65,17 +68,20 @@ bool is_identifier(string& token) {
 
 
 string do_assembly(string file_name) {
-    string output_string = "";
+    // c++打开不了带中文路径的，qt可以，所以使用qt内置类重写
     // 打开文件
-    ifstream f(file_name);
-    if (!f.is_open()) {
+    QFile fp(QString::fromStdString(file_name));
+    if(!fp.open(QFile::ReadOnly)){
         return "failed to open file: " + file_name;
     }
-
+    QByteArray ba = fp.readAll();
+    stringstream ss;
+    ss<<ba.toStdString();
+    string output_string = "";
     // 读取每行内容
     vector<string>lines;
-    get_lines(f, lines);
-    f.close();
+    get_lines(ss, lines);
+    fp.close();
     /*for (int i = 0; i < lines.size(); i++)cout << lines[i] << endl;
     cout << lines.size();*/
 
