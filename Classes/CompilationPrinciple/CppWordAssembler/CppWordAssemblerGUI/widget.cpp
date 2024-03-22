@@ -36,6 +36,7 @@ void Widget::on_run_btn_clicked()
         QMessageBox::warning(this, "警告", "请选择正确的文件路径后再次尝试");
         return;
     }
+    fp.close();
     QString output_string = QString::fromStdString(do_assembly(file_path.toStdString()));
     ui->result->setText(output_string);
 }
