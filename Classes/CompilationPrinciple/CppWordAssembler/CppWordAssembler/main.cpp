@@ -23,7 +23,10 @@ unordered_set<string> keywords = {
 	"short", "signed", "sizeof", "static", "static_assert", "static_cast",
 	"struct", "switch", "template", "this", "thread_local", "throw",
 	"true", "try", "typedef", "typeid", "typename", "union",
-	"unsigned", "using", "using", "virtual", "void", "volatile", "main", "include", "define", "cin", "cout", "string"
+	"unsigned", "using", "using", "virtual", "void", "volatile", "main", "include", "define", "cin", "cout", "string",
+	"while", "alignas", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit", "atomic_noexcept", "bitand", "bitor",
+	"char8_t", "compl", "concept", "consteval", "constinit", "co_await", "co_return", "co_yield", "export", "not",
+	"not_eq", "or", "or_eq", "reflexpr", "synchronized", "throw", "wchar_t", "xor", "requires"
 };
 bool is_keyword(string& token) {
 	return keywords.count(token);
