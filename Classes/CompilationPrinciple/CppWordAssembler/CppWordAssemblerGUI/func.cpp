@@ -21,7 +21,7 @@ unordered_set<string> keywords = {
     "unsigned", "using", "using", "virtual", "void", "volatile", "main", "include", "define", "cin", "cout", "string",
     "while", "alignas", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit", "atomic_noexcept", "bitand", "bitor",
     "char8_t", "compl", "concept", "consteval", "constinit", "co_await", "co_return", "co_yield", "export", "not",
-    "not_eq", "or", "or_eq", "reflexpr", "synchronized", "throw", "wchar_t", "xor"
+    "not_eq", "or", "or_eq", "reflexpr", "synchronized", "throw", "wchar_t", "xor", "requires"
 };
 bool is_keyword(string& token) {
 	return keywords.count(token);
@@ -107,7 +107,7 @@ string do_assembly(string file_name) {
                     // 把中间的 文件名/标识符 取出来
                     i++; // 跳过'<'
                     string name = "";
-                    while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i] == '.')) {
+                    while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i] == '.'|| is_num(lines[line_index][i]) || lines[line_index][i] == '_')) {
                         // 文件名后缀前有符号'.'，添加判断
                         name += lines[line_index][i];
                         i++;

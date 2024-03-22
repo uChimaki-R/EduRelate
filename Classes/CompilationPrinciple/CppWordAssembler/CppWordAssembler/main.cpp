@@ -109,7 +109,7 @@ void do_assembly(string file_name) {
 					// 把中间的 文件名/标识符 取出来
 					i++; // 跳过'<'
 					string name = "";
-					while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i] == '.')) {
+					while (i < lines[line_index].size() && (is_word(lines[line_index][i]) || lines[line_index][i] == '.' || is_num(lines[line_index][i]) || lines[line_index][i] == '_')) {
 						// 文件名后缀前有符号'.'，添加判断
 						name += lines[line_index][i];
 						i++;
