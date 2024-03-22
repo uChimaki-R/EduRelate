@@ -6,6 +6,7 @@
 #include<fstream>
 #include<sstream>
 #include<vector>
+#include <QFileDialog>
 using namespace std;
 
 bool is_keyword(string& token);
