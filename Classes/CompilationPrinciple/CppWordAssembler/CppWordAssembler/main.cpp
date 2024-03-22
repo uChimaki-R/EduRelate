@@ -185,41 +185,25 @@ void do_assembly(string file_name) {
 					// 负数
 					// 把该token取出来
 					i++; // 跳过'-'
-					while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
+					while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.' || lines[line_index][i] == 'x' || lines[line_index][i] == 'X' || lines[line_index][i] == 'L' || lines[line_index][i] == 'e' || lines[line_index][i] == 'E')) {
 						// 如果是浮点，数字中间会有'.'
+						if (lines[line_index][i] == 'e' || lines[line_index][i] == 'E') {
+							// 3.45E+3/3.45e3 这种e后面一个都是要的，多加一个
+							now_token += lines[line_index][i];
+							i++;
+						}
 						now_token += lines[line_index][i];
 						i++;
 					}
 					i--; // 回到单词的最后位置，后面还会自己++
 					if (now_token.find('.') != now_token.npos) {
 						// 浮点数
-						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t浮点数\n";
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t浮点数\n";
 						now_token.clear(); // 清空token
 					}
 					else {
 						// 整数
-						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t整数\n";
-						now_token.clear(); // 清空token
-					}
-				}
-				else if (lines[line_index][i] == '-' && i + 1 < lines[line_index].size() && is_num(lines[line_index][i + 1])) {
-					// 负数
-					// 把该token取出来
-					i++; // 跳过'-'
-					while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
-						// 如果是浮点，数字中间会有'.'
-						now_token += lines[line_index][i];
-						i++;
-					}
-					i--; // 回到单词的最后位置，后面还会自己++
-					if (now_token.find('.') != now_token.npos) {
-						// 浮点数
-						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t浮点数\n";
-						now_token.clear(); // 清空token
-					}
-					else {
-						// 整数
-						output_string += "line[" + to_string(temp_line_index) + "]\t" + "-" + now_token + "\t整数\n";
+						output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t整数\n";
 						now_token.clear(); // 清空token
 					}
 				}
@@ -267,8 +251,13 @@ void do_assembly(string file_name) {
 			else if (is_num(lines[line_index][i])) {
 				// 数字
 				// 把该token取出来
-				while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.')) {
+				while (i < lines[line_index].size() && (is_num(lines[line_index][i]) || lines[line_index][i] == '.' || lines[line_index][i] == 'x' || lines[line_index][i] == 'X' || lines[line_index][i] == 'L' || lines[line_index][i] == 'e' || lines[line_index][i] == 'E')) {
 					// 如果是浮点，数字中间会有'.'
+					if (lines[line_index][i] == 'e' || lines[line_index][i] == 'E') {
+						// 3.45E+3/3.45e3 这种e后面一个都是要的，多加一个
+						now_token += lines[line_index][i];
+						i++;
+					}
 					now_token += lines[line_index][i];
 					i++;
 				}
@@ -296,6 +285,15 @@ void do_assembly(string file_name) {
 				now_token = '"' + now_token + '"';
 				output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t字符串\n";
 				now_token.clear(); // 清空token
+			}
+			else if (lines[line_index][i] == '\'') {
+				// 字符
+				string s(1, lines[line_index][i + 1]);
+				s = "'" + s + "'";
+				now_token = s;
+				output_string += "line[" + to_string(temp_line_index) + "]\t" + now_token + "\t字符\n";
+				now_token.clear(); // 清空token
+				i += 2;
 			}
 		}
 	}
