@@ -7,7 +7,7 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    this->setWindowTitle("C++单词拼装器");
+    this->setWindowTitle("C++单词拼装器\t(20222131003 陈锐)");
     connect(ui->path, &QTextBrowser::textChanged, this, &Widget::chose_file_path);
 }
 
