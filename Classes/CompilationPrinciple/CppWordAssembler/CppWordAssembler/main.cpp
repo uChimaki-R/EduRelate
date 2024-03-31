@@ -72,11 +72,11 @@ bool is_identifier(string& token) {
 }
 
 
-void do_assembly(string file_name) {
+void do_assembly(string file_path) {
 	// 打开文件
-	ifstream f(file_name);
+	ifstream f(file_path);
 	if (!f.is_open()) {
-		cout << "failed to open file: " << file_name << endl;
+		cout << "failed to open file: " << file_path << endl;
 		return;
 	}
 
