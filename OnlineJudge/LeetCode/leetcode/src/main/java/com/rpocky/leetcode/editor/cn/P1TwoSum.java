@@ -55,7 +55,6 @@ public class P1TwoSum {
     public static void main(String[] args) {
         // TO TEST
         Solution solution = new P1TwoSum().new Solution();
-        System.out.println(Arrays.toString(solution.twoSum(new int[]{2, 7, 11, 15}, 9)));
     }
 
     //leetcode submit region begin(Prohibit modification and deletion)
